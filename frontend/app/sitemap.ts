@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 async function getProducts() {
-  const res = await fetch("http://localhost:5000/api/products");
+  const res = await fetch("https://shopease-w340.onrender.com/api/products");
   return res.json();
 }
 
