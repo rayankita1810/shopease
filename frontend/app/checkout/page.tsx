@@ -8,7 +8,6 @@ import { toast } from "react-hot-toast";
 import Image from "next/image";
 import type { CartItem } from "@/types";
 
-
 // Load Razorpay
 const loadScript = (src: string) => {
   return new Promise((resolve) => {
@@ -38,7 +37,10 @@ export default function CheckoutPage() {
     setCart(getCart());
   }, []);
 
-  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const total = cart.reduce(
+    (acc, item) => acc + Number(item.price) * Number(item.quantity),
+    0,
+  );
 
   const handlePayment = async () => {
     try {
@@ -68,7 +70,7 @@ export default function CheckoutPage() {
       }
 
       const { data } = await API.post("/payment/create-razorpay-order", {
-        amount: total,
+        amount: Number(total.toFixed(2)),
       });
 
       const options = {

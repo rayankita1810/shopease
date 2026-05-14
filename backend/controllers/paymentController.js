@@ -9,20 +9,34 @@ export const createRazorpayOrder = async (req, res) => {
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
-    const { amount } = req.body;
+    let { amount } = req.body;
+
+    amount = Number(amount);
+
+    if (!amount || isNaN(amount)) {
+      return res.status(400).json({
+        message: "Invalid amount",
+      });
+    }
 
     const options = {
-      amount: amount * 100,
+      amount: Math.round(amount * 100), // paise
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
     };
+
+    console.log("FINAL RAZORPAY OPTIONS:", options);
 
     const order = await razorpay.orders.create(options);
 
     res.json(order);
   } catch (err) {
     console.error("Create Razorpay Order Error:", err);
-    res.status(500).json({ message: "Error creating order" });
+
+    res.status(500).json({
+      message: "Error creating order",
+      error: err,
+    });
   }
 };
 
